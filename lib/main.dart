@@ -83,7 +83,10 @@ class _InsunoHomePageState extends State<InsunoHomePage> {
             .last; // Extracts the number from relay_X
 
         // Extracting the state value
-        bool state = document['fields']['state']['integerValue'] != "0";
+        bool state = false;
+        try {
+          state = document['fields']['state']['integerValue'] == "1";
+        } catch (e) {}
 
         // Mapping the relay number to the corresponding relay in relayStates map
         switch (relayNumber) {
@@ -104,6 +107,54 @@ class _InsunoHomePageState extends State<InsunoHomePage> {
       setState(() {});
     } else {
       print('Failed to load parameters: ${response.reasonPhrase}');
+    }
+  }
+
+  void updateRelay(String relay) async {
+    const String baseUrl = 'https://firestore.googleapis.com/v1';
+    const String projectId =
+        'espmeasurement'; // Replace with your Firebase project ID
+    const String collectionName =
+        'parameters'; // Replace with your collection name
+    const String accessToken =
+        'YOUR_ACCESS_TOKEN'; // Replace with a valid access token
+    bool state;
+
+    String relayName = "relay_1";
+    state = relayStates[relay] ?? false;
+    switch (relay) {
+      case 'Wireless charger':
+        relayName = 'relay_1';
+        //state = relayStates['Wireless charger'];
+        break;
+      case 'LED lights':
+        relayName = 'relay_2';
+        //state = relayStates['LED lights'];
+        break;
+      case 'USB-c charger':
+        relayName = 'relay_3';
+        //state = relayStates['USB-c charger'];
+        break;
+    }
+
+    // Step 2: Update the document using the document ID
+    String updateUrl =
+        '$baseUrl/projects/$projectId/databases/(default)/documents/$collectionName/$relayName';
+    String updateBody = json.encode({
+      'fields': {
+        // Update your fields here
+        'state': {'integerValue': state ? 1 : 0},
+      },
+    });
+    final updateResponse = await http.patch(
+      Uri.parse(updateUrl),
+      body: updateBody,
+    );
+
+    if (updateResponse.statusCode == 200) {
+      //print('Document successfully updated.');
+    } else {
+      //print('Failed to update document. StatusCode: ${updateResponse.statusCode}');
     }
   }
 
@@ -146,6 +197,7 @@ class _InsunoHomePageState extends State<InsunoHomePage> {
                           setState(() {
                             relayStates[relay] = value;
                           });
+                          updateRelay(relay);
                           // Here you would also send a request to update the relay state
                         },
                       ),

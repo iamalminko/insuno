@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:async'; // Import async library for Timer
+import 'dart:async';
+
+import 'package:insuno_m/screens/splash_screen.dart'; // Import async library for Timer
 
 void main() {
   runApp(InsunoApp());
@@ -11,8 +13,8 @@ class InsunoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Insuno',
-      home: InsunoHomePage(),
+      title: 'Insuno M',
+      home: SplashScreen(),
     );
   }
 }
@@ -48,16 +50,37 @@ class _InsunoHomePageState extends State<InsunoHomePage> {
   }
 
   Future<void> fetchMeasurements() async {
-    final response = await http.get(Uri.parse(
-        'https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents/measurements?pageSize=1'));
+    String postUrl =
+        "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents:runQuery";
+    String postBody = json.encode({
+      "structuredQuery": {
+        "from": [
+          {"collectionId": "measurements"}
+        ],
+        "orderBy": [
+          {
+            "field": {"fieldPath": "timestamp"},
+            "direction": "DESCENDING"
+          }
+        ],
+        "limit": 1
+      }
+    });
+    final response = await http.post(
+      Uri.parse(postUrl),
+      body: postBody,
+    );
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final documents = data['documents'] as List;
-      if (documents.isNotEmpty) {
+      List<dynamic> data = json.decode(response.body);
+      if (data.isNotEmpty) {
         setState(() {
-          current = documents[0]['fields']['current']['doubleValue'];
-          voltage = documents[0]['fields']['voltage']['doubleValue'];
+          current =
+              (data[0]['document']['fields']['current']['doubleValue'] as num)
+                  .toDouble();
+          voltage =
+              (data[0]['document']['fields']['voltage']['doubleValue'] as num)
+                  .toDouble();
         });
       }
     } else {
@@ -169,7 +192,9 @@ class _InsunoHomePageState extends State<InsunoHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Insuno'),
+        title: const Text('Insuno Manage'),
+        //foregroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 240, 110, 51),
       ),
       body: Center(
         child: Padding(

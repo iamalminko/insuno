@@ -36,7 +36,9 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    double circleDiameter = 296.0;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double circleDiameter = screenWidth / 2;
     // Calculate the top and left properties for the circles to position them by their centers
     double circle1Top = 91 - circleDiameter / 2;
     double circle1Left = 0 - circleDiameter / 2;

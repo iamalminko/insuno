@@ -509,8 +509,16 @@ class _DashboardState extends State<DashboardPage> {
                               ],
                             ),
                           ),
-                          Divider(
-                              color: const Color.fromARGB(255, 211, 210, 210)),
+                          Center(
+                            child: FractionallySizedBox(
+                              widthFactor: 0.9, // 90% of the available width
+                              child: Divider(
+                                color: const Color.fromARGB(255, 211, 210, 210),
+                                thickness:
+                                    2, // Optional: Sets the thickness of the divider
+                              ),
+                            ),
+                          ),
                           // Group 1
                           // SizedBox as a spacer
                           SizedBox(
@@ -558,9 +566,16 @@ class _DashboardState extends State<DashboardPage> {
                               );
                             },
                           ),
-                          Divider(
-                              color: const Color.fromARGB(255, 211, 210,
-                                  210)), // Line at the bottom of the group
+                          Center(
+                            child: FractionallySizedBox(
+                              widthFactor: 0.9, // 90% of the available width
+                              child: Divider(
+                                color: const Color.fromARGB(255, 211, 210, 210),
+                                thickness:
+                                    2, // Optional: Sets the thickness of the divider
+                              ),
+                            ),
+                          ), // Line at the bottom of the group
 
                           // Group 2
                           // SizedBox as a spacer

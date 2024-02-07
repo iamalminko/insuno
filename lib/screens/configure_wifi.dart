@@ -11,12 +11,12 @@ import 'package:insuno_m/screens/registration.dart';
 
 enum RequestStatus { initial, loading, success, error }
 
-class ConfigureInsuno extends StatefulWidget {
+class ConfigureWiFi extends StatefulWidget {
   @override
-  _ConfigureInsuno createState() => _ConfigureInsuno();
+  _ConfigureWiFi createState() => _ConfigureWiFi();
 }
 
-class _ConfigureInsuno extends State<ConfigureInsuno> {
+class _ConfigureWiFi extends State<ConfigureWiFi> {
   final TextEditingController ssidController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   RequestStatus requestStatus = RequestStatus.initial;
@@ -222,8 +222,8 @@ class _ConfigureInsuno extends State<ConfigureInsuno> {
                     style: ElevatedButton.styleFrom(
                       primary: Color(0xFFACA4A0), // Button color
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            5), // Adjust the border radius as needed
+                        borderRadius: BorderRadius
+                            .zero, // Adjust the border radius as needed
                       ),
                     ),
                     onPressed: () async {
@@ -235,8 +235,8 @@ class _ConfigureInsuno extends State<ConfigureInsuno> {
                       final String password = passwordController.text;
                       final Uri url = Uri.parse('http://192.168.4.1/')
                           .replace(queryParameters: {
-                        'ap_ssid': ssid,
-                        'ap_password': password,
+                        'ssid': ssid,
+                        'password': password,
                       });
 
                       try {
@@ -302,8 +302,8 @@ class _ConfigureInsuno extends State<ConfigureInsuno> {
                     style: ElevatedButton.styleFrom(
                       primary: Color(0xFFACA4A0), // Button color
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            5), // Adjust the border radius as needed
+                        borderRadius: BorderRadius
+                            .zero, // Adjust the border radius as needed
                       ),
                     ),
                     onPressed: () {
@@ -346,7 +346,10 @@ class _ConfigureInsuno extends State<ConfigureInsuno> {
                     //Navigate to InsunoHomePage
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => DashboardPage()),
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DashboardPage(isCardVisibleInitially: true),
+                      ), // Or false
                     );
 
                     setState(() {

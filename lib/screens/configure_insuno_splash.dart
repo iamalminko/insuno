@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:insuno_m/main.dart';
-import 'package:insuno_m/screens/configure_insuno.dart';
+import 'package:insuno_m/screens/configure_wifi.dart';
 import 'package:insuno_m/screens/registration.dart';
 
 class ConfigureInsunoSplash extends StatelessWidget {
+  final Widget destination;
+
+  ConfigureInsunoSplash({required this.destination});
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -125,7 +128,7 @@ class ConfigureInsunoSplash extends StatelessWidget {
                 // Navigate to InsunoHomePage
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ConfigureInsuno()),
+                  MaterialPageRoute(builder: (context) => destination),
                 );
               },
               child: Text(

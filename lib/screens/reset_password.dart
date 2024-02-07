@@ -4,10 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:insuno_m/main.dart';
 import 'package:insuno_m/screens/dashboard.dart';
-import 'package:insuno_m/screens/registration.dart';
-import 'package:insuno_m/screens/reset_password.dart';
+import 'package:insuno_m/screens/login.dart';
 
-class Login extends StatelessWidget {
+class ResetPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -70,14 +69,14 @@ class Login extends StatelessWidget {
 
               // "Welcome onboard" text using AutoSizeText
               Positioned(
-                top: 190,
+                top: 260,
                 left: screenWidth *
                     0.275, // Centering text by adjusting left padding
                 child: Container(
                   width: screenWidth * 0.45, // 45% width of the screen
                   height: 24,
                   child: AutoSizeText(
-                    'Welcome back',
+                    'Reset password',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -87,19 +86,29 @@ class Login extends StatelessWidget {
                 ),
               ),
 
+              // Second text using AutoSizeText
               Positioned(
-                top: screenHeight * 0.28, // 28% from the top
-                left: (screenWidth - imageWidth) / 2, // Centered horizontally
-                child: SvgPicture.asset(
-                  'assets/info.svg', // Ensure this path is correct
-                  width: imageWidth,
-                  height: imageHeight,
+                top: 316,
+                left: screenWidth *
+                    0.15, // Adjusting left padding to center the text
+                child: Container(
+                  width: screenWidth * 0.7, // 70% width of the screen
+                  height: 48,
+                  child: AutoSizeText(
+                    'Enter the email address you used when you joined and we’ll send you instructions to reset your password.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                    ),
+                    maxLines: 2,
+                    minFontSize: 10,
+                  ),
                 ),
               ),
 
               // Text input for email
               Positioned(
-                top: 476, // Adjust top positioning as needed
+                top: 444, // Adjust top positioning as needed
                 left: screenWidth * 0.06, // To achieve 88% width of the screen
                 right: screenWidth * 0.06,
                 child: Container(
@@ -128,78 +137,6 @@ class Login extends StatelessWidget {
                 ),
               ),
 
-              // Text input for email
-              Positioned(
-                top: 549, // Adjust top positioning as needed
-                left: screenWidth * 0.06, // To achieve 88% width of the screen
-                right: screenWidth * 0.06,
-                child: Container(
-                  height: 50, // Height is 50
-                  decoration: BoxDecoration(
-                    color: Colors.white, // Background color white
-                    borderRadius: BorderRadius.circular(25), // Corner radius 25
-                  ),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: InputBorder.none, // No border
-                      hintText: 'Enter your password', // Placeholder text
-                      hintStyle: TextStyle(
-                          color: Colors.grey), // Placeholder text color
-                      contentPadding: EdgeInsets.only(
-                        left: 40,
-                        top: 15,
-                        bottom: 15,
-                        right: 40,
-                      ), // Padding inside the input field, including 20 from the left
-                    ),
-                    style: TextStyle(
-                      fontSize: 12, // Smaller font size
-                    ),
-                  ),
-                ),
-              ),
-
-              Positioned(
-                bottom: 180, // Adjust this value as needed to position the text
-                child: Container(
-                  width: screenWidth, // Full screen width for easy centering
-                  child: Center(
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.black), // Default text style
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'Forgot password',
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 80, 194, 201),
-                            ), // Sign In text style
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ResetPassword()),
-                                );
-                              },
-                            // recognizer: TapGestureRecognizer()
-                            //   ..onTap = () {
-                            //     Navigator.push(
-                            //       context,
-                            //       MaterialPageRoute(
-                            //           builder: (context) => Registration()),
-                            //     );
-                            //   },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
               // Positioned Register Button
               Positioned(
                 bottom: 79, //top: screenHeight * 0.83, // 83% from the top
@@ -217,13 +154,13 @@ class Login extends StatelessWidget {
                   ),
                   onPressed: () {
                     // Navigate to InsunoHomePage
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DashboardPage()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => DashboardPage()),
+                    // );
                   },
                   child: Text(
-                    'Login',
+                    'Reset password',
                     style: TextStyle(
                       color: Color(0xFFFFFFFF), // Text color
                       fontSize: 13, // Adjust the font size as needed
@@ -240,14 +177,14 @@ class Login extends StatelessWidget {
                     child: RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 15,
                             color: Colors.black), // Default text style
                         children: <TextSpan>[
-                          TextSpan(text: 'Don\'t have an account? '),
+                          TextSpan(text: 'You remember you password? '),
                           TextSpan(
-                            text: 'Sign Up',
-                            style: const TextStyle(
+                            text: 'Sign In',
+                            style: TextStyle(
                                 color: const Color.fromARGB(255, 19, 81, 85),
                                 fontWeight:
                                     FontWeight.bold), // Sign In text style
@@ -256,7 +193,7 @@ class Login extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Registration()),
+                                      builder: (context) => Login()),
                                 );
                               },
                           ),

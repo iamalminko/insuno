@@ -171,8 +171,7 @@ class _ConfigureReboot extends State<ConfigureReboot> {
                       final String password = passwordController.text;
                       final Uri url = Uri.parse('http://192.168.4.1/')
                           .replace(queryParameters: {
-                        'ap_ssid': ssid,
-                        'ap_password': password,
+                        'reset': 'Reboot',
                       });
 
                       try {

@@ -15,6 +15,7 @@ class InsunoApp extends StatelessWidget {
     return MaterialApp(
       title: 'Insuno M',
       home: SplashScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

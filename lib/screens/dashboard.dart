@@ -56,8 +56,10 @@ class _DashboardState extends State<DashboardPage> {
   }
 
   Future<void> fetchMeasurements() async {
+    // String postUrl =
+    //     "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents:runQuery";
     String postUrl =
-        "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents:runQuery";
+        "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents/devices/INSUNO_48:e7:29:97:f4:5c:runQuery";
     String postBody = json.encode({
       "structuredQuery": {
         "from": [
@@ -96,8 +98,12 @@ class _DashboardState extends State<DashboardPage> {
   }
 
   Future<void> fetchParameters() async {
-    final response = await http.get(Uri.parse(
-        'https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents/parameters'));
+    // String postUrl =
+    //     "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents/parameters";
+    String postUrl =
+        "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents/devices/INSUNO_48:e7:29:97:f4:5c/parameters";
+
+    final response = await http.get(Uri.parse(postUrl));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> parsedJson = json.decode(response.body);
@@ -165,7 +171,7 @@ class _DashboardState extends State<DashboardPage> {
 
     // Step 2: Update the document using the document ID
     String updateUrl =
-        '$baseUrl/projects/$projectId/databases/(default)/documents/$collectionName/$relayName';
+        '$baseUrl/projects/$projectId/databases/(default)/documents/devices/INSUNO_48:e7:29:97:f4:5c/$collectionName/$relayName';
     String updateBody = json.encode({
       'fields': {
         // Update your fields here

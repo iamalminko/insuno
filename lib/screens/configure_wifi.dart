@@ -317,7 +317,7 @@ class _ConfigureWiFi extends State<ConfigureWiFi> {
                       });
                     },
                     child: Text(
-                      'Reset',
+                      'Clear',
                       style: TextStyle(
                         color: Color(0xFFFFFFFF), // Text color
                         fontSize: 13, // Adjust the font size as needed

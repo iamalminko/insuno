@@ -13,35 +13,26 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
-class DashboardPage extends StatefulWidget {
-  final bool isCardVisibleInitially;
-  DashboardPage({this.isCardVisibleInitially = false});
+class DeviceCard extends StatefulWidget {
+  final String deviceId;
+
+  DeviceCard({required this.deviceId});
 
   @override
-  _DashboardState createState() => _DashboardState();
+  _DeviceCardState createState() => _DeviceCardState();
 }
 
-class _DashboardState extends State<DashboardPage> {
-  // Dummy data for current and voltage
-  double? current;
-  double? voltage;
-  Timer? measurementsTimer;
-  Timer? parametersTimer; // Timer for fetching parameters
-
-  bool isCardVisible = false; // State variable for card visibility
-
-  void toggleCard() {
-    setState(() {
-      isCardVisible = !isCardVisible; // Toggle the card visibility
-    });
-  }
-
-  // Initial states for the relays
+class _DeviceCardState extends State<DeviceCard> {
+  double current = 0.0;
+  double voltage = 0.0;
   Map<String, bool> relayStates = {
     'WiFi Charger': false,
     'LED': false,
     'USB-C': false,
   };
+
+  Timer? measurementsTimer;
+  Timer? parametersTimer; // Timer for fetching parameters
 
   @override
   void initState() {
@@ -52,14 +43,13 @@ class _DashboardState extends State<DashboardPage> {
     fetchParameters();
     parametersTimer =
         Timer.periodic(Duration(seconds: 10), (Timer t) => fetchParameters());
-    isCardVisible = widget.isCardVisibleInitially;
   }
 
   Future<void> fetchMeasurements() async {
     // String postUrl =
     //     "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents:runQuery";
     String postUrl =
-        "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents/devices/INSUNO_48:e7:29:97:f4:5c:runQuery";
+        "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents/devices/${widget.deviceId}:runQuery";
     String postBody = json.encode({
       "structuredQuery": {
         "from": [
@@ -101,7 +91,7 @@ class _DashboardState extends State<DashboardPage> {
     // String postUrl =
     //     "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents/parameters";
     String postUrl =
-        "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents/devices/INSUNO_48:e7:29:97:f4:5c/parameters";
+        "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents/devices/${widget.deviceId}/parameters";
 
     final response = await http.get(Uri.parse(postUrl));
 
@@ -171,7 +161,7 @@ class _DashboardState extends State<DashboardPage> {
 
     // Step 2: Update the document using the document ID
     String updateUrl =
-        '$baseUrl/projects/$projectId/databases/(default)/documents/devices/INSUNO_48:e7:29:97:f4:5c/$collectionName/$relayName';
+        '$baseUrl/projects/$projectId/databases/(default)/documents/devices/${widget.deviceId}/$collectionName/$relayName';
     String updateBody = json.encode({
       'fields': {
         // Update your fields here
@@ -191,9 +181,182 @@ class _DashboardState extends State<DashboardPage> {
   }
 
   @override
+  Widget build(BuildContext context) {
+    // Your existing card layout code here
+    // Replace 'Beach table 1' with widget.deviceName
+    // Positioned Card
+    return Card(
+      color: Color(0xFFFFFFFF), // Card background color
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(13), // Corner radius
+      ),
+      child: Container(
+        height: 151, // Fixed height
+        padding: EdgeInsets.all(8), // Padding inside the card
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment
+              .spaceEvenly, // Space rows evenly within the card
+          children: [
+            // First Row
+            Row(
+              children: [
+                Text(
+                  widget.deviceId,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0x46000000),
+                  ),
+                ),
+              ],
+            ),
+
+            // Second Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment
+                  .spaceEvenly, // Space elements evenly in the row
+              children: [
+                SvgPicture.asset('assets/bolt.svg',
+                    width: 24,
+                    height: 24), // Replace with your actual SVG asset
+                Text(
+                  '$current A',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0x46000000),
+                  ),
+                ),
+                SvgPicture.asset('assets/battery.svg',
+                    width: 24,
+                    height: 24), // Replace with your actual SVG asset
+                Text(
+                  '$voltage V',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0x46000000),
+                  ),
+                ),
+              ],
+            ),
+
+            // Third Row - Texts
+            Row(
+              mainAxisAlignment: MainAxisAlignment
+                  .spaceAround, // Space texts evenly in the row
+              children: relayStates.keys.map((relay) => Text(relay)).toList(),
+            ),
+
+            // Fourth Row - Switches aligned under the texts
+            Row(
+              mainAxisAlignment: MainAxisAlignment
+                  .spaceAround, // Align centers of switches under the texts
+              children: relayStates.keys.toList().asMap().entries.map((entry) {
+                int idx = entry.key;
+                String relay = entry.value;
+                Widget switchWidget = Switch(
+                  value: relayStates[relay]!,
+                  onChanged: (bool value) {
+                    // Handle relay toggle
+                    setState(() {
+                      relayStates[relay] = value;
+                    });
+                    updateRelay(relay);
+                    // Update the relay state in your backend or model as well
+                  },
+                );
+
+                // Apply translation to the second switch only
+                if (idx == 0) {
+                  // Remember, index is 0-based so the second item is at index 1
+                  return Transform.translate(
+                    offset: Offset(25, 0), // Move 100 pixels to the right
+                    child: switchWidget,
+                  );
+                }
+                if (idx == 1) {
+                  // Remember, index is 0-based so the second item is at index 1
+                  return Transform.translate(
+                    offset: Offset(27, 0), // Move 100 pixels to the right
+                    child: switchWidget,
+                  );
+                }
+                if (idx == 2) {
+                  // Remember, index is 0-based so the second item is at index 1
+                  return Transform.translate(
+                    offset: Offset(7, 0), // Move 100 pixels to the right
+                    child: switchWidget,
+                  );
+                }
+                return switchWidget;
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DashboardPage extends StatefulWidget {
+  final bool isCardVisibleInitially;
+  DashboardPage({this.isCardVisibleInitially = false});
+
+  @override
+  _DashboardState createState() => _DashboardState();
+}
+
+class _DashboardState extends State<DashboardPage> {
+  // Dummy data for current and voltage
+  double? current;
+  double? voltage;
+
+  List<DeviceCard> deviceCards = [];
+
+  bool isCardVisible = false; // State variable for card visibility
+
+  void toggleCard() {
+    setState(() {
+      isCardVisible = !isCardVisible; // Toggle the card visibility
+    });
+  }
+
+  // Initial states for the relays
+  Map<String, bool> relayStates = {
+    'WiFi Charger': false,
+    'LED': false,
+    'USB-C': false,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    isCardVisible = widget.isCardVisibleInitially;
+    fetchDevices();
+  }
+
+  Future<void> fetchDevices() async {
+    String devicesUrl =
+        "https://firestore.googleapis.com/v1/projects/espmeasurement/databases/(default)/documents/device_names";
+    final response = await http.get(Uri.parse(devicesUrl));
+
+    if (response.statusCode == 200) {
+      List<dynamic> devicesData = json.decode(response.body)['documents'];
+      setState(() {
+        deviceCards = devicesData.map((deviceData) {
+          return DeviceCard(
+            deviceId: deviceData['name'].split('/').last,
+          );
+        }).toList();
+      });
+    } else {
+      print('Failed to load devices: ${response.reasonPhrase}');
+    }
+  }
+
+  @override
   void dispose() {
-    measurementsTimer?.cancel();
-    parametersTimer?.cancel(); // Cancel the parameters timer
     super.dispose();
   }
 
@@ -323,135 +486,20 @@ class _DashboardState extends State<DashboardPage> {
                   ),
                 ),
               ),
-
-              // Positioned Card
               Positioned(
                 top: 375,
                 left: screenWidth * 0.06, // To achieve 88% width of the screen
                 right: screenWidth * 0.06,
-                child: Card(
-                  color: Color(0xFFFFFFFF), // Card background color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(13), // Corner radius
-                  ),
-                  child: Container(
-                    height: 151, // Fixed height
-                    padding: EdgeInsets.all(8), // Padding inside the card
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment
-                          .spaceEvenly, // Space rows evenly within the card
-                      children: [
-                        // First Row
-                        Row(
-                          children: [
-                            Text(
-                              'Beach table 1',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color(0x46000000),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        // Second Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment
-                              .spaceEvenly, // Space elements evenly in the row
-                          children: [
-                            SvgPicture.asset('assets/bolt.svg',
-                                width: 24,
-                                height:
-                                    24), // Replace with your actual SVG asset
-                            Text(
-                              '$current A',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color(0x46000000),
-                              ),
-                            ),
-                            SvgPicture.asset('assets/battery.svg',
-                                width: 24,
-                                height:
-                                    24), // Replace with your actual SVG asset
-                            Text(
-                              '$voltage V',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color(0x46000000),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        // Third Row - Texts
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment
-                              .spaceAround, // Space texts evenly in the row
-                          children: relayStates.keys
-                              .map((relay) => Text(relay))
-                              .toList(),
-                        ),
-
-                        // Fourth Row - Switches aligned under the texts
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment
-                              .spaceAround, // Align centers of switches under the texts
-                          children: relayStates.keys
-                              .toList()
-                              .asMap()
-                              .entries
-                              .map((entry) {
-                            int idx = entry.key;
-                            String relay = entry.value;
-                            Widget switchWidget = Switch(
-                              value: relayStates[relay]!,
-                              onChanged: (bool value) {
-                                // Handle relay toggle
-                                setState(() {
-                                  relayStates[relay] = value;
-                                });
-                                updateRelay(relay);
-                                // Update the relay state in your backend or model as well
-                              },
-                            );
-
-                            // Apply translation to the second switch only
-                            if (idx == 0) {
-                              // Remember, index is 0-based so the second item is at index 1
-                              return Transform.translate(
-                                offset: Offset(
-                                    25, 0), // Move 100 pixels to the right
-                                child: switchWidget,
-                              );
-                            }
-                            if (idx == 1) {
-                              // Remember, index is 0-based so the second item is at index 1
-                              return Transform.translate(
-                                offset: Offset(
-                                    27, 0), // Move 100 pixels to the right
-                                child: switchWidget,
-                              );
-                            }
-                            if (idx == 2) {
-                              // Remember, index is 0-based so the second item is at index 1
-                              return Transform.translate(
-                                offset: Offset(
-                                    7, 0), // Move 100 pixels to the right
-                                child: switchWidget,
-                              );
-                            }
-                            return switchWidget;
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
+                bottom: 0, // Stretch down to the bottom of the screen
+                child: ListView.builder(
+                  itemCount: deviceCards.length,
+                  itemBuilder: (context, index) {
+                    return deviceCards[index];
+                  },
+                  padding: EdgeInsets.zero, // Remove default padding
                 ),
               ),
+
               // The toggleable card
               if (isCardVisible) ...[
                 Positioned(

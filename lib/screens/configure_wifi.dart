@@ -233,12 +233,9 @@ class _ConfigureWiFi extends State<ConfigureWiFi> {
                       });
                       final String ssid = ssidController.text;
                       final String password = passwordController.text;
-                      final Uri url = Uri.parse('http://192.168.4.1/')
-                          .replace(queryParameters: {
-                        'ssid': ssid,
-                        'password': password,
-                      });
-
+                      final Uri url = Uri.parse(
+                        'http://192.168.4.1?ssid=$ssid&password=$password&ent_username=&ent_identity=',
+                      );
                       try {
                         final response = await http.get(url).timeout(
                               const Duration(

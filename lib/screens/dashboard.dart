@@ -38,11 +38,11 @@ class _DeviceCardState extends State<DeviceCard> {
   void initState() {
     super.initState();
     fetchMeasurements();
-    measurementsTimer =
-        Timer.periodic(Duration(seconds: 10), (Timer t) => fetchMeasurements());
+    // measurementsTimer =
+    //     Timer.periodic(Duration(seconds: 10), (Timer t) => fetchMeasurements());
     fetchParameters();
-    parametersTimer =
-        Timer.periodic(Duration(seconds: 10), (Timer t) => fetchParameters());
+    // parametersTimer =
+    //     Timer.periodic(Duration(seconds: 10), (Timer t) => fetchParameters());
   }
 
   Future<void> fetchMeasurements() async {
@@ -265,6 +265,7 @@ class _DeviceCardState extends State<DeviceCard> {
                     updateRelay(relay);
                     // Update the relay state in your backend or model as well
                   },
+                  activeTrackColor: Color(0xFFF06E33),
                 );
 
                 // Apply translation to the second switch only
@@ -499,9 +500,29 @@ class _DashboardState extends State<DashboardPage> {
                   padding: EdgeInsets.zero, // Remove default padding
                 ),
               ),
+              Positioned(
+                right: 30, // Adjusted as needed from the right edge
+                top: 322, // Adjusted as needed from the bottom edge
+                child: InkWell(
+                  onTap: () {
+                    toggleCard(); // Action to toggle card visibility
+                  },
+                  child: Icon(
+                    Icons.more_vert, // Three horizontal dots icon
+                    size: 35, // Adjust the size as needed
+                    color: Color(0xFFF06E33), // Adjust the color as needed
+                  ),
+                ),
+              ),
 
               // The toggleable card
               if (isCardVisible) ...[
+                Positioned.fill(
+                  child: Container(
+                    color: Colors.black
+                        .withOpacity(0.6), // Black color with 60% opacity
+                  ),
+                ),
                 Positioned(
                   top: 117,
                   left:
@@ -559,6 +580,22 @@ class _DashboardState extends State<DashboardPage> {
                                     ),
                                   ),
                                 ),
+                                Spacer(), // This will push the SVG icon to the end of the row
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.05), // 5% padding from the right
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      toggleCard(); // Toggle card visibility
+                                    },
+                                    child: SvgPicture.asset(
+                                      'assets/x.svg',
+                                      width: 27.0,
+                                      height: 27.0,
+                                    ),
+                                  ),
+                                ),
                                 // Line separating profile from settings
                               ],
                             ),
@@ -569,7 +606,7 @@ class _DashboardState extends State<DashboardPage> {
                               child: Divider(
                                 color: const Color.fromARGB(255, 211, 210, 210),
                                 thickness:
-                                    2, // Optional: Sets the thickness of the divider
+                                    1, // Optional: Sets the thickness of the divider
                               ),
                             ),
                           ),
@@ -626,7 +663,7 @@ class _DashboardState extends State<DashboardPage> {
                               child: Divider(
                                 color: const Color.fromARGB(255, 211, 210, 210),
                                 thickness:
-                                    2, // Optional: Sets the thickness of the divider
+                                    1, // Optional: Sets the thickness of the divider
                               ),
                             ),
                           ), // Line at the bottom of the group
@@ -664,24 +701,6 @@ class _DashboardState extends State<DashboardPage> {
                   ),
                 ),
               ],
-              // Positioned SVG Image Button in the bottom right corner
-              Positioned(
-                right: 25, // 16 pixels from the right edge
-                bottom: 25, // 16 pixels from the bottom edge
-                child: InkWell(
-                  onTap: () {
-                    toggleCard(); // Toggle card visibility
-                  },
-                  child: SvgPicture.asset(
-                    isCardVisible
-                        ? 'assets/home_icon.svg'
-                        : 'assets/settings_svgrepo_com.svg', // Path to your SVG image in the assets
-                    width: 61,
-                    height: 61,
-                    color: Color(0xFFF06E33),
-                  ),
-                ),
-              ),
             ],
           ),
         ),

@@ -177,7 +177,7 @@ class Registration extends StatelessWidget {
                     0.06, // 6% padding from right to achieve 88% width
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFF06E33), // Button color
+                    backgroundColor: Color(0xFFF06E33), // Button color
                     fixedSize: Size(screenWidth * 0.88, 60), // Button size
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero, // No corner radius

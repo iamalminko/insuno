@@ -220,7 +220,7 @@ class _ConfigureWiFi extends State<ConfigureWiFi> {
                   height: 60,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFFACA4A0), // Button color
+                      backgroundColor: Color(0xFFACA4A0), // Button color
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius
                             .zero, // Adjust the border radius as needed
@@ -297,7 +297,7 @@ class _ConfigureWiFi extends State<ConfigureWiFi> {
                   height: 60,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFFACA4A0), // Button color
+                      backgroundColor: Color(0xFFACA4A0), // Button color
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius
                             .zero, // Adjust the border radius as needed
@@ -333,7 +333,7 @@ class _ConfigureWiFi extends State<ConfigureWiFi> {
                     0.06, // 6% padding from right to achieve 88% width
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFF06E33), // Button color
+                    backgroundColor: Color(0xFFF06E33), // Button color
                     fixedSize: Size(screenWidth * 0.88, 60), // Button size
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero, // No corner radius
